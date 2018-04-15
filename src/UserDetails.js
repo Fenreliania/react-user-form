@@ -115,13 +115,15 @@ class UserForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: null,
-      dob: null,
-      gender: "0",
-      contact: [],
-      hasGuardian: false,
-      guardianName: null,
-      guardianContact: [],
+      values: {
+        name: null,
+        dob: null,
+        gender: "0",
+        contact: [],
+        hasGuardian: false,
+        guardianName: null,
+        guardianContact: []
+      },
       isValid: {
         name: true,
         dob: true,
@@ -140,9 +142,19 @@ class UserForm extends React.Component {
     const name = target.name;
 
     this.setState({
-      [name]: value,
+      values: { ...this.state.values, [name]: value },
       errors: { ...this.state.errors, [name]: valid }
     });
+  }
+
+  exportData() {
+    // Not sure where you want the data exported to at this stage
+
+    // Unsure how to reconcile nesting guardian info in its own object with
+    // updating the state from component name and allowing the schema to be
+    // altered.
+    var json = JSON.stringify(this.state.values);
+    return json;
   }
 
   render() {
@@ -179,7 +191,7 @@ class UserForm extends React.Component {
           checked={this.state.hasGuardian}
           onChange={this.onValidate.bind(this)}
         />
-        {this.state.hasGuardian ? (
+        {this.state.values.hasGuardian ? (
           <div>
             <NameField
               name="guardianName"
