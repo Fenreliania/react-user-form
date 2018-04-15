@@ -1,4 +1,5 @@
 import React from "react";
+import "./style.css";
 
 const NameField = ({ name, value, onValidate, label, ...props }) => {
   const validate = event => {
@@ -15,6 +16,7 @@ const NameField = ({ name, value, onValidate, label, ...props }) => {
         value={value}
         onChange={validate}
         name={name}
+        className={props.className}
         {...props}
       />
     </React.Fragment>
@@ -51,7 +53,9 @@ const ContactFieldGroup = ({ name, value, onValidate, label, ...props }) => {
     <React.Fragment>
       <label>{label}</label>
       <div>{fields}</div>
-      <button onClick={addContact} value="Add Contact" />
+      <button onClick={addContact} value="addContact" className="btn">
+        Add Contact
+      </button>
     </React.Fragment>
   );
 };
@@ -76,7 +80,7 @@ const DOBField = ({ name, value, onValidate, label, ...props }) => {
     // Get the date 18 years ago
     var thresholdDate = new Date();
     thresholdDate.setFullYear(thresholdDate.getFullYear() - 18);
-    var valid = event.target.value < thresholdDate;
+    var valid = new Date(event.target.value) <= thresholdDate;
     onValidate(event, valid);
   };
 
@@ -143,7 +147,7 @@ class UserForm extends React.Component {
 
     this.setState({
       values: { ...this.state.values, [name]: value },
-      errors: { ...this.state.errors, [name]: valid }
+      isValid: { ...this.state.isValid, [name]: valid }
     });
   }
 
@@ -158,58 +162,73 @@ class UserForm extends React.Component {
   }
 
   render() {
+    let { onSubmit, className, ...props } = this.props;
     return (
-      <div>
+      <form
+        onSubmit={onSubmit}
+        className={`vertical-form ${className}`}
+        {...props}
+      >
         <NameField
           name="name"
           value={this.state.name}
           onValidate={this.onValidate.bind(this)}
           label="Full Name"
+          className={this.state.isValid.name ? "" : "error"}
         />
         <DOBField
           name="dob"
           value={this.state.dob}
           onValidate={this.onValidate.bind(this)}
           label="Date of Birth"
+          className={this.state.isValid.dob ? "" : "error"}
         />
         <GenderField
           name="gender"
           value={this.state.gender}
           onValidate={this.onValidate.bind(this)}
           label="Gender"
+          className={this.state.isValid.gender ? "" : "error"}
         />
         <ContactFieldGroup
           name="contact"
           value={this.state.contact}
           onValidate={this.onValidate.bind(this)}
           label="Contact Numbers"
+          className={this.state.isValid.contact ? "" : "error"}
         />
-        <label for="hasGuardian">Requires Guardian Consent?</label>
-        <input
-          type="checkbox"
-          name="hasGuardian"
-          checked={this.state.hasGuardian}
-          onChange={this.onValidate.bind(this)}
-        />
+        <label for="hasGuardian">
+          Requires Guardian Consent?
+          <input
+            type="checkbox"
+            name="hasGuardian"
+            checked={this.state.hasGuardian}
+            onChange={this.onValidate.bind(this)}
+            className={this.state.isValid.hasGuardian ? "" : "error"}
+          />
+        </label>
         {this.state.values.hasGuardian ? (
-          <div>
+          <div className="vertical-form">
             <NameField
               name="guardianName"
               value={this.state.guardianName}
               onValidate={this.onValidate.bind(this)}
               label="Guardian Name"
+              className={this.state.isValid.guardianName ? "" : "error"}
             />
             <ContactFieldGroup
               name="guardianContact"
               value={this.state.guardianContact}
               onValidate={this.onValidate.bind(this)}
               label="Guardian Contact Numbers"
+              className={this.state.isValid.guardianContact ? "" : "error"}
             />
           </div>
         ) : (
           <div />
         )}
-      </div>
+        <input type="submit" value="Submit" />
+      </form>
     );
   }
 }

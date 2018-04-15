@@ -1,0 +1,12 @@
+.vertical-form {
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="checkbox"] {
+  margin-left: 10px;
+}
+
+.error {
+  border: 1px solid red;
+}
