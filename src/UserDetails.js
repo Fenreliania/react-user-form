@@ -129,14 +129,15 @@ class UserForm extends React.Component {
         guardianContact: []
       },
       isValid: {
-        name: true,
-        dob: true,
+        name: false,
+        dob: false,
         gender: true,
         contact: true,
         hasGuardian: true,
         guardianName: true,
         guardianContact: true
-      }
+      },
+      allValid: false
     };
   }
 
@@ -149,6 +150,9 @@ class UserForm extends React.Component {
       values: { ...this.state.values, [name]: value },
       isValid: { ...this.state.isValid, [name]: valid }
     });
+
+    var allValid = this.checkAllValid();
+    this.setState({ allValid: allValid });
   }
 
   exportData() {
@@ -161,11 +165,30 @@ class UserForm extends React.Component {
     return json;
   }
 
+  checkAllValid() {
+    var vals = Object.values(this.state.isValid);
+    console.log(vals);
+    for (var v in vals) {
+      if (!vals[v]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  onSubmit(event) {
+    var allValid = this.checkAllValid();
+    this.setState({ allValid: allValid });
+    if (!allValid) {
+      event.preventDefault();
+    }
+  }
+
   render() {
-    let { onSubmit, className, ...props } = this.props;
+    let { className, ...props } = this.props;
     return (
       <form
-        onSubmit={onSubmit}
+        onSubmit={this.onSubmit}
         className={`vertical-form ${className}`}
         {...props}
       >
@@ -227,7 +250,7 @@ class UserForm extends React.Component {
         ) : (
           <div />
         )}
-        <input type="submit" value="Submit" />
+        <input type="submit" value="Submit" disabled={!this.state.allValid} />
       </form>
     );
   }
