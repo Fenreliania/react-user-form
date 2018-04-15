@@ -58,7 +58,10 @@ const ContactField = ({ name, value, onValidate, ...props }) => {
 
 const DOBField = ({ name, value, onValidate, ...props }) => {
   const validate = event => {
-    var valid = event.target.value.trim().split(" ").length === 2;
+    // Get the date 18 years ago
+    var thresholdDate = new Date();
+    thresholdDate.setFullYear(thresholdDate.getFullYear() - 18);
+    var valid = event.target.value < thresholdDate;
     onValidate(event, valid);
   };
 
@@ -71,7 +74,7 @@ const GenderField = ({ name, value, onValidate, ...props }) => {
   };
 
   return (
-    <select value={value} onChange={validate}>
+    <select name={name} value={value} onChange={validate}>
       <option value="0">Other/Prefer not to say</option>
       <option value="1">Female</option>
       <option value="2">Male</option>
@@ -85,7 +88,7 @@ class UserForm extends React.Component {
     this.state = {
       name: null,
       dob: null,
-      gender: 0,
+      gender: "0",
       contact: [],
       hasGuardian: false,
       guardianName: null,
@@ -142,7 +145,7 @@ class UserForm extends React.Component {
           checked={this.state.hasGuardian}
           onChange={this.onValidate.bind(this)}
         />
-        {this.state.hasGuardian?
+        {this.state.hasGuardian ? (
           <div>
             <NameField
               name="guardianName"
@@ -155,10 +158,9 @@ class UserForm extends React.Component {
               onValidate={this.onValidate.bind(this)}
             />
           </div>
-          :
+        ) : (
           <div />
-        }
-        
+        )}
       </div>
     );
   }
