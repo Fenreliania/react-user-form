@@ -1,10 +1,5 @@
-import React from 'react';
-import { render } from 'react-dom';
+import React from "react";
+import { render } from "react-dom";
+import UserForm from "./UserDetails";
 
-
-const App = () => (
-  <div>
-  </div>
-);
-
-render(<App />, document.getElementById('root'));
+render(<UserForm />, document.getElementById("root"));
