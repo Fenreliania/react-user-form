@@ -1,6 +1,5 @@
 import React from "react";
 
-
 const NameField = ({ name, value, onValidate, ...props }) => {
 
   const validate = event => {
@@ -74,4 +73,76 @@ const GenderField = ({ name, value, onValidate, ...props }) => {
       <option value="2">Male</option>
     </select>
   );
+};
+
+class UserForm extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      "name": null,
+      "dob": null,
+      "gender": 0,
+      "contact": [],
+      "hasGuardian": false,
+      "guardianName": null,
+      "guardianContact": []
+      "errors": {
+        "name": false,
+        "dob": false,
+        "gender": false,
+        "contact": false,
+        "hasGuardian": false,
+        "guardianName": false,
+        "guardianContact": false,
+      }
+    }
+  }
+
+  const onValidate = (name, value, valid) => {
+    this.setState({
+      name: value,
+      "errors": { ...this.state.errors, [name]: valid}
+      })
+  }
+
+  render() {
+    return (
+      <div>
+        <NameField
+          name="name"
+          value={this.state.name}
+          onValidate={onValidate.bind(this)}
+        />
+        <DOBField
+          name="dob"
+          value={this.state.dob}
+          onValidate={onValidate.bind(this)}
+        />
+        <GenderField
+          name="gender"
+          value={this.state.gender}
+          onValidate={onValidate.bind(this)}
+        />
+        <ContactFieldGroup
+          name="contact"
+          value={this.state.contact}
+          onValidate={onValidate.bind(this)}
+        />
+        <input type="checkbox" value={this.state.hasGuardian} />
+        <div visible={this.state.hasGuardian}>
+          <NameField
+            name="guardianName"
+            value={this.state.guardianName}
+            onValidate={onValidate.bind(this)}
+          />
+          <ContactFieldGroup
+            name="guardianContact"
+            value={this.state.guardianContact}
+            onValidate={onValidate.bind(this)}
+          />
+        </div>
+      </div>
+    );
+  }
 };
