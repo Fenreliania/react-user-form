@@ -35,6 +35,9 @@ const ContactFieldGroup = ({ name, value, onValidate, ...props }) => {
   }
 
   return (
+    <div>
+      {fields}
+    </div>
   );
 };
 
